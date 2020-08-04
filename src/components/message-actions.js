@@ -49,8 +49,15 @@ class MessageActions extends CustomElement {
         this.chatview.onMuteUser(this.model);
     }
 
+    async onBanUserButtonClicked (ev) {
+        ev.preventDefault();
+        const reason = await api.prompt(__('Reason'), __('Type a reason for the ban'));
+        this.chatview.onBanUser(this.model, reason);
+    }
+
     async renderActions () {
         const buttons = [];
+        const is_moderator = true; // @TODO get moderator
         if (this.model.get('sender') !== 'me') {
             buttons.push({
                 'i18n_text': __('Mute User'),
@@ -58,6 +65,13 @@ class MessageActions extends CustomElement {
                 'button_class': 'chat-msg__action-mute',
                 'icon_class': 'fa fa-comment-slash',
                 'name': 'mute'
+            });
+            is_moderator && buttons.push({
+                'i18n_text': __('Ban User'),
+                'handler': ev => this.onBanUserButtonClicked(ev),
+                'button_class': 'chat-msg__action-ban',
+                'icon_class': 'fa fa-ban',
+                'name': 'ban'
             });
         }
 

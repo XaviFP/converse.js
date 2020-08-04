@@ -2448,6 +2448,12 @@ converse.plugins.add('converse-muc', {
                     }
                 });
                 await Promise.all(Array.from(this.messages).map(mapMessages));
+            },
+
+            async onBanUser (message, reason) {
+                const jid = message.get('from');
+                const room = await api.rooms.get(''); //@TODO get proper room
+                room.sendAffiliationIQ('outcast', { jid, reason });
             }
         });
 
